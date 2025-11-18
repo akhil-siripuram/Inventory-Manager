@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- Simple icon set used by the UI. Each symbol is lightweight and uses currentColor -->
+  <symbol id="box" viewBox="0 0 24 24">
+    <path d="M21 16V8a1 1 0 0 0-.5-.87L13 3.2a1 1 0 0 0-1 0L3.5 7.13A1 1 0 0 0 3 8v8a1 1 0 0 0 .5.87L11 20.8a1 1 0 0 0 1 0l7.5-3.93A1 1 0 0 0 21 16z" />
+  </symbol>
+
+  <symbol id="plus" viewBox="0 0 24 24">
+    <path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"/>
+  </symbol>
+
+  <symbol id="arrow-left" viewBox="0 0 24 24">
+    <path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"/>
+  </symbol>
+
+  <symbol id="search" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"/>
+    <path d="M21 21l-4.35-4.35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"/>
+  </symbol>
+
+  <symbol id="trash" viewBox="0 0 24 24">
+    <path d="M3 6h18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"/>
+    <path d="M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"/>
+    <path d="M10 11v6M14 11v6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"/>
+  </symbol>
+</svg>

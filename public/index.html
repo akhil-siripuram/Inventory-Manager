@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Inventory Manager — Ultra UI</title>
+
+  <!-- Local SVG icons bundle -->
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-content">
+      <h1><svg class="icon icon-large" aria-hidden="true"><use href="/icons.svg#box"></use></svg> Inventory</h1>
+      <button id="edit-locations-btn" class="btn-edit">Edit Locations</button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- LOCATIONS SIDEBAR -->
+    <aside id="locations-sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <h2>Locations</h2>
+        <button id="close-sidebar" class="close-btn">✕</button>
+      </div>
+      <div class="sidebar-body">
+        <div class="add-panel">
+          <input id="new-location-name" placeholder="New location..." />
+          <button id="create-location" class="btn-primary">
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#plus"></use></svg>
+            Add
+          </button>
+        </div>
+        <div id="locations-list" class="locations-list"></div>
+      </div>
+    </aside>
+
+    <!-- LOCATIONS VIEW -->
+    <section id="locations-view" class="view active slide-in">
+
+      <div id="locations" class="grid"></div>
+
+    </section>
+
+    <!-- PRODUCTS VIEW -->
+    <section id="products-view" class="view hidden slide-in">
+      
+      <button id="back-to-locations" class="back-btn">
+        <svg class="icon" aria-hidden="true"><use href="/icons.svg#arrow-left"></use></svg> Back
+      </button>
+
+      <h2 id="location-title" class="location-header"></h2>
+
+      <!-- Search -->
+      <div class="search-box">
+  <svg class="icon" aria-hidden="true"><use href="/icons.svg#search"></use></svg>
+        <input id="product-search" placeholder="Search products..." />
+      </div>
+
+      <div id="products-list"></div>
+
+      <div class="add-panel">
+        <input id="product-name" placeholder="Product name" />
+        <input id="product-category" placeholder="Category (optional)" />
+        <button id="add-product-btn" class="btn-success">
+          <svg class="icon" aria-hidden="true"><use href="/icons.svg#plus"></use></svg>
+          Add
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
