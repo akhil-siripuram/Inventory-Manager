@@ -1,4 +1,5 @@
 const express = require('express');
+const Authenticate = require('../Middleware/AuthMiddleware');
 const router = express.Router();
 const {
 	getAllUsers,
@@ -10,7 +11,7 @@ const {
 } = require('../Controllers/UserController');
 
 
-router.route('/').get(getAllUsers).post(createUser);
+router.route('/').get(Authenticate,getAllUsers).post(createUser);
 router.route('/test').post(Test)
 
 
