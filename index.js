@@ -17,6 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use("/api/v1/users", require("./Routes/UserRoutes"));
 app.use("/api/v1/locations", require("./Routes/LocationRoutes"));
 app.use("/api/v1/products", require("./Routes/ProductRoutes"));
+app.use("/api/v1/auth", require("./Routes/authRoutes"));
 
 // Global error handler (must be at the end, after all other middleware)
 app.use(ErrorHandler);
