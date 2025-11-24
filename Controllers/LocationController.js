@@ -3,7 +3,7 @@ const Users = require('../Models/UserModel');
 const Products = require('../Models/ProductModel');
 
 const getLocationsByUser = async (req, res,next) => {
-    const { userId } = req.body;
+    const userId  = req.user._id;
     try {
         const locations = await Locations.find({ user: userId });
         res.status(200).json({ message: 'getLocationsByUser: connection OK', locations });
@@ -13,7 +13,8 @@ const getLocationsByUser = async (req, res,next) => {
 };
 
 const createLocation = async (req, res,next) => {
-    const { name, userId } = req.body;
+    const { name } = req.body;
+    const userId = req.user._id;
     try {
         const user = await Users.findById(userId);
         if (!user) {
@@ -28,7 +29,8 @@ const createLocation = async (req, res,next) => {
 };
 
 const deleteLocation = async (req, res,next) => {
-    const { locationId, userId } = req.body;
+    const { locationId } = req.body;
+    const userId = req.user._id;
     try {
         const user = await Users.findById(userId);
         if (!user) {

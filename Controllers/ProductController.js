@@ -3,7 +3,8 @@ const Locations = require('../Models/LocationModel');
 const Users = require('../Models/UserModel');
 
 const createProduct = async (req, res, next) => {
-    const { name, category, locationId, userId } = req.body;
+    const { name, category, locationId } = req.body;
+    const userId = req.user._id;
     try {
         const user = await Users.findById(userId);
         if (!user) {
@@ -25,7 +26,8 @@ const createProduct = async (req, res, next) => {
 };
 
 const getProductsByLocation = async (req, res, next) => {
-    const { locationId,userId } = req.body;
+    const { locationId } = req.body;
+    const userId = req.user._id;
     try {
         const user = await Users.findById(userId);
         if (!user) {
@@ -46,7 +48,7 @@ const getProductsByLocation = async (req, res, next) => {
 };
 
 const getProductsByUser = async (req, res, next) => {
-    const { userId } = req.body;
+    const userId = req.user._id;
     try {
         const user = await Users.findById(userId);
         if (!user) {

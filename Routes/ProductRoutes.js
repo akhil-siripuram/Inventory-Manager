@@ -1,4 +1,5 @@
 const express = require('express');
+const Authenticate = require('../Middleware/AuthMiddleware');
 const router = express.Router();
 const {
     createProduct,
@@ -7,9 +8,9 @@ const {
     deleteProduct
 } = require('../Controllers/ProductController');
 
-router.route('/').post(createProduct);
-router.route('/by-location').post(getProductsByLocation);
-router.route('/by-user').post(getProductsByUser);
-router.route('/:id').delete(deleteProduct); // Plac
+router.route('/').post(Authenticate,createProduct);
+router.route('/by-location').post(Authenticate,getProductsByLocation);
+router.route('/by-user').post(Authenticate,getProductsByUser);
+router.route('/:id').delete(Authenticate,deleteProduct); // Plac
 
 module.exports = router;

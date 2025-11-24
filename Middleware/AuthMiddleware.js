@@ -10,6 +10,14 @@ const Authenticate = async (req, res, next) => {
             return res.status(401).json({ message: 'Unauthorized access/ no token' });
         }
         const token = req.headers.authorization.split(' ')[1];
+
+        //verify token from cookie
+
+        // if (!req.cookies.accesstoken) {
+        //     return res.status(401).json({ message: 'Unauthorized access/ no token' });
+        // }
+        // const token = req.cookies.accesstoken;
+        
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await Users.findById(decoded.id).select('-password');
         if (!user) {

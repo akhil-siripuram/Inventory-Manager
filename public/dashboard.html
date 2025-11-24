@@ -13,11 +13,35 @@
   <header class="topbar">
     <div class="topbar-content">
       <h1><svg class="icon icon-large" aria-hidden="true"><use href="/icons.svg#box"></use></svg> Inventory</h1>
-      <button id="edit-locations-btn" class="btn-edit">Edit Locations</button>
+      <div id="header-actions">
+        <button id="edit-locations-btn" class="btn-edit">Edit Locations</button>
+        <button id="logout-btn" class="btn-logout">Logout</button>
+      </div>
     </div>
   </header>
 
   <main id="main">
+
+    <!-- LOGIN VIEW -->
+    <section id="login-view" class="view active slide-in">
+      <div class="login-container">
+        <div class="login-box">
+          <h1>Inventory Manager</h1>
+          <form id="login-form">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="your@email.com" required />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" placeholder="Password" required />
+            </div>
+            <button type="submit" class="btn-primary">Login</button>
+          </form>
+          <p id="login-error" class="error-msg"></p>
+        </div>
+      </div>
+    </section>
 
     <!-- LOCATIONS SIDEBAR -->
     <aside id="locations-sidebar" class="sidebar">

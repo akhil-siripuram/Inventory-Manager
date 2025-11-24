@@ -1,14 +1,24 @@
 (function () {
 
-  const USER_ID = "6918697758f0f0e4a01b2332";
+  // Token storage (from login)
+  let authToken = null;
 
-  // DOM
-  const locationsEl = document.getElementById("locations");
-  const productsEl = document.getElementById("products-list");
-
+  // DOM - Views
+  const loginView = document.getElementById("login-view");
   const locView = document.getElementById("locations-view");
   const prodView = document.getElementById("products-view");
 
+  // Login form
+  const loginForm = document.getElementById("login-form");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const loginError = document.getElementById("login-error");
+  const logoutBtn = document.getElementById("logout-btn");
+  const headerActions = document.getElementById("header-actions");
+
+  // Locations view
+  const locationsEl = document.getElementById("locations");
+  const productsEl = document.getElementById("products-list");
   const backBtn = document.getElementById("back-to-locations");
   const createLocBtn = document.getElementById("create-location");
   const addProductBtn = document.getElementById("add-product-btn");
@@ -39,10 +49,16 @@
   }
 
   async function api(path, body) {
+    const headers = { "Content-Type": "application/json" };
+    // Add Authorization header if token exists
+    if (authToken) {
+      headers["Authorization"] = `Bearer ${authToken}`;
+    }
     const res = await fetch(path, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(body),
+      credentials: 'include', // include cookies (refresh token)
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.message || "API error");
@@ -51,7 +67,8 @@
 
   // LOAD LOCATIONS
   async function loadLocations() {
-    const data = await api("/api/v1/locations/user", { userId: USER_ID });
+    // Token-based auth: no need to pass userId, it comes from req.user via auth middleware
+    const data = await api("/api/v1/locations/user", {});
     renderLocations(data.locations || []);
     renderLocationsSidebar(data.locations || []);
   }
@@ -111,17 +128,20 @@
      }
    
     try {
+      const headers = { "Content-Type": "application/json" };
+      if (authToken) {
+        headers["Authorization"] = `Bearer ${authToken}`;
+      }
       const res = await fetch("/api/v1/locations", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           locationId: loc._id,
-          userId: USER_ID,
         }),
+        credentials: 'include',
       });
 
       const data = await res.json().catch(() => ({}));
-      console.log(data);
       if (!res.ok) throw new Error(data.message || "API error");
       loadLocations();
     } catch (err) {
@@ -148,7 +168,6 @@
   async function loadProducts(locationId) {
     const data = await api("/api/v1/products/by-location", {
       locationId,
-      userId: USER_ID,
     });
     currentProducts = data.products || [];
     renderProducts(currentProducts);
@@ -198,7 +217,9 @@
         const id = btn.getAttribute('data-id');
         if (!confirm('Delete this product?')) return;
         try {
-          const res = await fetch(`/api/v1/products/${id}`, { method: 'DELETE' });
+          const headers = {};
+          if (authToken) headers["Authorization"] = `Bearer ${authToken}`;
+          const res = await fetch(`/api/v1/products/${id}`, { method: 'DELETE', headers, credentials: 'include' });
           const data = await res.json().catch(() => ({}));
           if (!res.ok) throw new Error(data.message || 'API error');
           loadProducts(currentLocation._id);
@@ -223,7 +244,7 @@
     const name = newLocInput.value.trim();
     if (!name) return;
 
-    await api("/api/v1/locations", { name, userId: USER_ID });
+    await api("/api/v1/locations", { name });
     newLocInput.value = "";
     loadLocations();
   };
@@ -239,7 +260,6 @@
       name,
       category,
       locationId: currentLocation._id,
-      userId: USER_ID,
     });
 
     productNameInput.value = "";
@@ -256,7 +276,6 @@
     editLocationsBtn.style.display = "block";
   };
 
-  // MODAL CONTROLS
   // SIDEBAR CONTROLS
   editLocationsBtn.onclick = () => {
     sidebar.classList.toggle("open");
@@ -265,6 +284,76 @@
   closeSidebarBtn.onclick = () => {
     sidebar.classList.remove("open");
   };
+
+  // LOGIN & AUTHENTICATION
+  function showLoginView() {
+    loginView.classList.remove("hidden");
+    locView.classList.add("hidden");
+    prodView.classList.add("hidden");
+    headerActions.style.display = "none";
+  }
+
+  function showAppView() {
+    loginView.classList.add("hidden");
+    locView.classList.remove("hidden");
+    headerActions.style.display = "flex";
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!email || !password) {
+      loginError.textContent = "Please fill in all fields";
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        credentials: 'include',
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || "Login failed");
+
+      // Store token (if returned in response)
+      if (data.token) {
+        authToken = data.token;
+      }
+
+      // Clear login form
+      loginError.textContent = "";
+      emailInput.value = "";
+      passwordInput.value = "";
+
+      // Show app and load locations
+      showAppView();
+      loadLocations();
+    } catch (err) {
+      loginError.textContent = err.message;
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      const headers = { "Content-Type": "application/json" };
+      if (authToken) headers["Authorization"] = `Bearer ${authToken}`;
+      console.log("Logging out with token:", authToken);
+      await fetch("/api/v1/auth/logout", { method: 'POST', credentials: 'include' });
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+    // Clear token and show login
+    authToken = null;
+    showLoginView();
+  }
+
+  loginForm.addEventListener("submit", handleLogin);
+  logoutBtn.onclick = handleLogout;
 
   function escapeHtml(s) {
     return s.replace(/[&<>"']/g, c => ({
@@ -276,6 +365,27 @@
     }[c]));
   }
 
-  loadLocations();
+  // Try to refresh access token using HttpOnly refresh cookie on load
+  async function tryRefresh() {
+    try {
+      const res = await fetch('/api/v1/auth/refresh', { method: 'POST', credentials: 'include' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || 'Refresh failed');
+      if (data.token) {
+        authToken = data.token;
+        showAppView();
+        loadLocations();
+        return true;
+      }
+    } catch (err) {
+      console.log('Token refresh failed:', err.message || err);
+    }
+    return false;
+  }
+
+  (async () => {
+    const ok = await tryRefresh();
+    if (!ok) showLoginView();
+  })();
 
 })();

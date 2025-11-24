@@ -4,6 +4,9 @@ const dotenv = require('dotenv').config();
 const path = require('path');
 const connectDB = require('./Database/mongodb');
 const ErrorHandler = require('./Middleware/ErrorHandler');
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
 
 connectDB();
 
@@ -24,7 +27,7 @@ app.use(ErrorHandler);
 
 // Root - serve index.html
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
 app.listen(PORT, () => {

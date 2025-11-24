@@ -18,7 +18,8 @@ const Test = async (req,res) => {
 
 // Simple response messages so you can quickly test connections
 const getAllUsers = async (req, res) => {
-    const Allusers = await Users.find()
+    const Allusers = await Users.find();
+    console.log(req.user);
 	res.status(200).json({ message: 'getAllUsers: connection OK', users: Allusers});
 };
 
